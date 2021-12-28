@@ -1,5 +1,7 @@
 package com.cos.book.web;
 
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
     @Transactional 각각의 테스트함수가 종료될 때마다 트랜잭션을 rollback을 해주는 어노테이션
 */
 
+@Slf4j
 @Transactional
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -21,4 +24,10 @@ public class BookControllerIntegreTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Test
+    public void save_테스트() {
+        log.info("save_테스트() 시작 =====================================");
+
+    }
 }
