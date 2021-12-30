@@ -1,8 +1,11 @@
 package com.cos.book.web;
 
 import com.cos.book.domain.Book;
+import com.cos.book.domain.BookRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -13,7 +16,11 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.mockito.Mockito.when;
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,6 +42,17 @@ public class BookControllerIntegreTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private BookRepository bookRepository;
+
+    @Autowired
+    private EntityManager entityManager; // Jpa의 내부 매니저
+
+    @BeforeEach //모든테스트함수가 각각 실행됨 안그러면 오토인크리먼트같은 경우 초기화가 되지 않음.
+    public void init() {
+        entityManager.createNativeQuery("ALTER TABLE book AlTER COLUMN id RESTART WITH 1").executeUpdate(); //h2 db기준
+    }
+
     // BDDMockito 패턴
     @Test
     public void save_테스트() throws Exception {
@@ -53,5 +71,26 @@ public class BookControllerIntegreTest {
         resultAction.andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title").value("스프링따라하기")) // JsonPath문법에 따라 처리
                 .andDo(MockMvcResultHandlers.print());
+    }
+
+
+    @Test
+    public void findAll_테스트() throws Exception {
+        // given
+        List<Book> books = new ArrayList<>();
+        books.add(new Book(null,"스프링부트 따라하기","코스"));
+        books.add(new Book(null,"리액트 따라하기","코스"));
+        books.add(new Book(null,"아무거나 따라하기","코스"));
+        bookRepository.saveAll(books);
+
+        //when
+        ResultActions resultAction = mockMvc.perform(get("/book").accept(MediaType.APPLICATION_JSON_UTF8));
+
+        //then
+        resultAction.andExpect(status().isOk())
+                .andExpect(jsonPath("$", Matchers.hasSize(3)))
+                .andExpect(jsonPath("$[0].title").value("스프링부트 따라하기"))
+                .andDo(MockMvcResultHandlers.print());
+
     }
 }
