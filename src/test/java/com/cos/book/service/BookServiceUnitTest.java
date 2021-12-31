@@ -3,6 +3,7 @@ package com.cos.book.service;
 // 단위 테스트 (Service와 관련된 애들만 메모리에 띄우면 됨)
 
 import com.cos.book.domain.BookRepository;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -22,4 +23,8 @@ public class BookServiceUnitTest {
 
     @Mock
     private BookRepository bookRepository;
+
+    @Test
+    public void 저장하기_테스트() {
+    }
 }
