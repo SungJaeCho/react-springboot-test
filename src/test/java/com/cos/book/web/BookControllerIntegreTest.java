@@ -5,7 +5,6 @@ import com.cos.book.domain.BookRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -54,6 +52,7 @@ public class BookControllerIntegreTest {
     @BeforeEach //모든테스트함수가 각각 실행됨 안그러면 오토인크리먼트같은 경우 초기화가 되지 않음.
     public void init() {
         entityManager.createNativeQuery("ALTER TABLE book AlTER COLUMN id RESTART WITH 1").executeUpdate(); //h2 db기준
+//        entityManager.createNativeQuery("ALTER TABLE book AUTO_INCREMENT = 1").executeUpdate(); //mysql db기준
     }
 
     // BDDMockito 패턴
