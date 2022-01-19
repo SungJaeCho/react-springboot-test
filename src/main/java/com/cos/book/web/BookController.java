@@ -13,11 +13,13 @@ public class BookController {
 
     private final BookService bookService;
 
+    @CrossOrigin // cors 정책 무시 외부에서 들어오는 자바 스크립트 요청 허용
     @PostMapping("/book")
     public ResponseEntity<?> save(@RequestBody Book book) {
         return new ResponseEntity<>(bookService.저장하기(book), HttpStatus.CREATED); // 200
     }
 
+    @CrossOrigin // cors 정책 무시 외부에서 들어오는 자바 스크립트 요청 허용
     @GetMapping("/book")
     public ResponseEntity<?> findAll() {
         return new ResponseEntity<>(bookService.모두가져오기(), HttpStatus.OK); // 200
